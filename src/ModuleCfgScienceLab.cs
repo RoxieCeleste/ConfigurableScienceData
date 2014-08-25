@@ -19,19 +19,25 @@ namespace ConfigurableScienceData {
 			base.OnSave(node);
 		}
 
-		public static float GetBoostForVesselData(Vessel host, CfgScienceData data) {
+		new public static float GetBoostForVesselData(Vessel host, ScienceData data){//CfgScienceData data) {
 			float result = 0f;
-			if(data.boostType.Equals(CfgScienceData.BoostType.TransmitValue)) {
-				Debug.Log("[SC] Xmit Value");
-				result = data.boostValue * data.transmitValue;
+
+			if(data is CfgScienceData){
+				if(((CfgScienceData)data).boostType.Equals(CfgScienceData.BoostType.TransmitValue)) {
+					Debug.Log("[SC] Xmit Value");
+					result = ((CfgScienceData)data).boostValue * data.transmitValue;
+				}
+				else if(((CfgScienceData)data).boostType.Equals(CfgScienceData.BoostType.BaseValue)) {
+					Debug.Log("[SC] Base Value");
+					result = ((CfgScienceData)data).boostValue;
+				}
+				else if(((CfgScienceData)data).boostType.Equals(CfgScienceData.BoostType.FlatValue)) {
+					Debug.Log("[SC] Flat Value");
+					result = ((CfgScienceData)data).boostValue / data.dataAmount;
+				}
 			}
-			else if(data.boostType.Equals(CfgScienceData.BoostType.BaseValue)) {
-				Debug.Log("[SC] Base Value");
-				result = data.boostValue;
-			}
-			else if(data.boostType.Equals(CfgScienceData.BoostType.FlatValue)) {
-				Debug.Log("[SC] Flat Value");
-				result = data.boostValue / data.dataAmount;
+			else{
+				result = ModuleScienceLab.GetBoostForVesselData(host, data);
 			}
 			return result;
 		}
